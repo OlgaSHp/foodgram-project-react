@@ -45,6 +45,11 @@ class Tags(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        """Производит проверку валидности полей и сохраняет объект в БД."""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class Recipes(models.Model):

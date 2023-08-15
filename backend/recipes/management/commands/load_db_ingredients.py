@@ -1,14 +1,17 @@
 import csv
+import os
 
 from django.core.management import BaseCommand
 from recipes.models import Ingredients
+data_path = os.path.dirname(os.path.abspath(__file__))
+
 
 
 class Command(BaseCommand):
     help = 'Загрузка из csv файла'
 
     def handle(self, *args, **kwargs):
-        data_path = 'C:\\Dev\\foodgram-project-react\\data'
+        data_path = '/app/recipes/management/commands'
         with open(
             f'{data_path}/ingredients.csv',
             'r',

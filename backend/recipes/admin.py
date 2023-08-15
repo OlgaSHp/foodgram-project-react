@@ -18,43 +18,17 @@ class RecipeTagsAdmin(admin.StackedInline):
 
 @admin.register(Recipes)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'get_author', 'name', 'text',
-        'cooking_time', 'get_tags', 'get_ingredients',
-        'pub_date', 'get_favorite_count')
-    search_fields = (
-        'name', 'cooking_time',
-        'author__email', 'author__first_name', 'ingredients__name')
-    list_filter = ('author__username', 'name', 'tags')
-    inlines = (RecipeIngredientAdmin,)
-    empty_value_display = EMPTY_MSG
+    list_display = ('name', 'cooking_time', 'author')
+    list_filter = ('name', 'author', 'tags')
+    readonly_fields = ('get_favorites_count',)
 
-    @admin.display(
-        description='Электронная почта автора')
-    def get_author(self, obj):
-        return obj.author.email
-    
-    @admin.display(description='Имя автора')
-    def get_author(self, obj):
-        return obj.author.username
+    def get_favorites_count(self, obj):
+        """Возвращает количество пользователей, которые в настоящий момент
+        имеют рецепт в избранном."""
+        return FavoriteRecipe.objects.filter(recipe=obj).count()
 
-    @admin.display(description='Тэги')
-    def get_tags(self, obj):
-        list_ = [_.name for _ in obj.tags.all()]
-        return ', '.join(list_)
-
-    @admin.display(description=' Ингредиенты ')
-    def get_ingredients(self, obj):
-        return '\n '.join([
-            f'{item["ingredient__name"]} - {item["amount"]}'
-            f' {item["ingredient__measurement_unit"]}.'
-            for item in obj.recipe.values(
-                'ingredient__name',
-                'amount', 'ingredient__measurement_unit')])
-
-    @admin.display(description='В избранном')
-    def get_favorite_count(self, obj):
-        return obj.favorite_recipe.count()
+    """Меняет отображение поля в админ-зоне."""
+    get_favorites_count.short_description = 'Добавлено в избранное раз'
 
 
 @admin.register(Tags)
@@ -72,7 +46,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'id', 'name', 'measurement_unit',)
     search_fields = (
         'name', 'measurement_unit',)
-    empty_value_display = EMPTY_MSG
+    list_filter = ('name',)
 
 
 @admin.register(Subscriptions)
