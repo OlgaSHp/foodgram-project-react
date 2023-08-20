@@ -1,18 +1,18 @@
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 from djoser.views import TokenDestroyView, UserViewSet
+from rest_framework.routers import DefaultRouter
 
-from api.views import (AddAndDeleteSubscribe, AddDeleteFavoriteRecipe,
-                       AddDeleteShoppingCart, GetToken, IngredientsViewSet,
+from api.views import (AddDeleteFavoriteRecipe, AddDeleteShoppingCart,
+                       AddDeleteSubscription, GetToken, IngredientsViewSet,
                        RecipesViewSet, TagsViewSet, UsersViewSet)
 
 app_name = 'api'
 
 router = DefaultRouter()
-router.register('users', UsersViewSet)
-router.register('tags', TagsViewSet)
-router.register('ingredients', IngredientsViewSet)
-router.register('recipes', RecipesViewSet)
+router.register(r'users', UsersViewSet)
+router.register(r'tags', TagsViewSet)
+router.register(r'ingredients', IngredientsViewSet)
+router.register(r'recipes', RecipesViewSet)
 
 
 urlpatterns = [
@@ -30,7 +30,7 @@ urlpatterns = [
          name='set_password'),
      path(
           'users/<int:user_id>/subscribe/',
-          AddAndDeleteSubscribe.as_view(),
+          AddDeleteSubscription.as_view(),
           name='subscribe'),
      path(
           'recipes/<int:recipe_id>/favorite/',

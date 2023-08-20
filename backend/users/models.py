@@ -1,19 +1,22 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from .users_consts import EMAIL_MAX_LEN, FIRST_NAME_MAX_LEN, LAST_NAME_MAX_LEN
+
 
 class User(AbstractUser):
+    """Модель для представления пользователя."""
     email = models.EmailField(
         'Email',
-        max_length=200,
+        max_length=EMAIL_MAX_LEN,
         unique=True,)
     first_name = models.CharField(
         'Имя',
-        max_length=150)
+        max_length=FIRST_NAME_MAX_LEN)
     last_name = models.CharField(
         'Фамилия',
-        max_length=150)
-    
+        max_length=LAST_NAME_MAX_LEN)
+
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_users',
