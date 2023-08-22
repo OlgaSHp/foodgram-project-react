@@ -8,6 +8,7 @@ class IsAuthorOrAdminOrReadOnly(permissions.BasePermission):
     администраторам - любые действия,
     другим пользователям - только безопасные (GET, HEAD, OPTIONS).
     """
+
     def has_object_permission(self, request, view, obj):
         """
         Проверяет, имеет ли пользователь разрешение на доступ к объекту.
@@ -23,7 +24,8 @@ class IsAuthorOrAdminOrReadOnly(permissions.BasePermission):
         return (
             obj.author == request.user
             or request.method in permissions.SAFE_METHODS
-            or request.user.is_superuser)
+            or request.user.is_superuser
+        )
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -33,6 +35,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     Позволяет администраторам выполнять любые действия, всем пользователям -
     только безопасные (GET, HEAD, OPTIONS).
     """
+
     def has_permission(self, request, view):
         """
         Проверяет, имеет ли пользователь разрешение на доступ к представлению.
@@ -44,6 +47,5 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         Возвращает:
         - bool: True, если пользователь имеет разрешение, иначе False.
         """
-        return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_staff)
+        return request.method in permissions.SAFE_METHODS or \
+            request.user.is_staff

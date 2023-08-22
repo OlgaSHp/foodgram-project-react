@@ -15,11 +15,11 @@ class Command(BaseCommand):
         ) as file:
             reader = csv.reader(file)
             next(reader)  # Skip header row
-            for row in reader:
-                name, measurement_unit = row
-                Ingredients.objects.create(
-                    name=name, measurement_unit=measurement_unit
-                )
+            ingredients_to_create = [
+                Ingredients(name=row[0], measurement_unit=row[1])
+                for row in reader
+            ]
+            Ingredients.objects.bulk_create(ingredients_to_create)
         self.stdout.write(
             self.style.SUCCESS("Загрузка ингредиентов прошла успешно")
         )

@@ -8,8 +8,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         data = [
-            {'name': 'Завтрак', 'color': '#E26C2D', 'slug': 'breakfast'},
-            {'name': 'Обед', 'color': '#49B64E', 'slug': 'dinner'},
-            {'name': 'Ужин', 'color': '#8775D2', 'slug': 'supper'}]
+            {"name": "Завтрак", "color": "#E26C2D", "slug": "breakfast"},
+            {"name": "Обед", "color": "#49B64E", "slug": "dinner"},
+            {"name": "Ужин", "color": "#8775D2", "slug": "supper"},
+        ]
         Tags.objects.bulk_create(Tags(**tag) for tag in data)
-        self.stdout.write(self.style.SUCCESS('Загрузка тэгов прошла успешно'))
+        self.stdout.write(self.style.SUCCESS("Загрузка тэгов прошла успешно"))

@@ -1,11 +1,11 @@
 import django_filters as filters
 from django.core.exceptions import ValidationError
+
 from recipes.models import Ingredients, Recipes
 from users.models import User
 
 
-class TagsMultipleChoiceField(
-        filters.fields.MultipleChoiceField):
+class TagsMultipleChoiceField(filters.fields.MultipleChoiceField):
     """
     Пользовательское поле выбора нескольких тегов.
 
@@ -13,6 +13,7 @@ class TagsMultipleChoiceField(
     - self.required: Поле обязательное для заполнения.
     - self.error_messages: Словарь с сообщениями об ошибках.
     """
+
     def validate(self, value):
         """
         Проверяет выбранные значения на валидность.
@@ -27,15 +28,15 @@ class TagsMultipleChoiceField(
         - None
         """
         if self.required and not value:
-            raise ValidationError(
-                self.error_messages['required'],
-                code='required')
+            raise ValidationError(self.error_messages["required"],
+                                  code="required")
         for val in value:
             if val in self.choices and not self.valid_value(val):
                 raise ValidationError(
-                    self.error_messages['invalid_choice'],
-                    code='invalid_choice',
-                    params={'value': val},)
+                    self.error_messages["invalid_choice"],
+                    code="invalid_choice",
+                    params={"value": val},
+                )
 
 
 class TagsFilter(filters.AllValuesMultipleFilter):
@@ -49,6 +50,7 @@ class TagsFilter(filters.AllValuesMultipleFilter):
     Данный фильтр предназначен для использования вместе с
     дополнительным полем TagsMultipleChoiceField.
     """
+
     field_class = TagsMultipleChoiceField
 
 
@@ -63,11 +65,12 @@ class IngredientFilter(filters.FilterSet):
     - model: Ссылка на модель Ingredients.
     - fields: Поля для фильтрации.
     """
-    name = filters.CharFilter(lookup_expr='istartswith')
+
+    name = filters.CharFilter(lookup_expr="istartswith")
 
     class Meta:
         model = Ingredients
-        fields = ('name',)
+        fields = ("name",)
 
 
 class RecipeFilter(filters.FilterSet):
@@ -84,18 +87,17 @@ class RecipeFilter(filters.FilterSet):
     - model: Ссылка на модель Recipes.
     - fields: Поля для фильтрации.
     """
-    author = filters.ModelChoiceFilter(
-        queryset=User.objects.all())
+
+    author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_in_shopping_cart = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget(),
-        label='В корзине.')
+        widget=filters.widgets.BooleanWidget(), label="В корзине."
+    )
     is_favorited = filters.BooleanFilter(
-        widget=filters.widgets.BooleanWidget(),
-        label='В избранных.')
-    tags = filters.AllValuesMultipleFilter(
-        field_name='tags__slug',
-        label='Ссылка')
+        widget=filters.widgets.BooleanWidget(), label="В избранных."
+    )
+    tags = filters.AllValuesMultipleFilter(field_name="tags__slug",
+                                           label="Ссылка")
 
     class Meta:
         model = Recipes
-        fields = ['is_favorited', 'is_in_shopping_cart', 'author', 'tags']
+        fields = ["is_favorited", "is_in_shopping_cart", "author", "tags"]

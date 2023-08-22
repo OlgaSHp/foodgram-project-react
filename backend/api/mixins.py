@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
-from recipes.models import Recipes
 from rest_framework.permissions import AllowAny
+
+from recipes.models import Recipes
 
 from .permissions import IsAdminOrReadOnly
 from .serializers import SubscribeRecipeSerializer
@@ -14,6 +15,7 @@ class GetObjectMixin:
     - serializer_class: Класс сериализатора для объекта.
     - permission_classes: Классы разрешений для доступа к объекту.
     """
+
     serializer_class = SubscribeRecipeSerializer
     permission_classes = (AllowAny,)
 
@@ -24,7 +26,7 @@ class GetObjectMixin:
         Возвращает:
         - Объект рецепта.
         """
-        recipe_id = self.kwargs['recipe_id']
+        recipe_id = self.kwargs["recipe_id"]
         recipe = get_object_or_404(Recipes, id=recipe_id)
         self.check_object_permissions(self.request, recipe)
         return recipe
@@ -43,5 +45,6 @@ class PermissionAndPaginationMixin:
     предоставляет возможность
     определения разрешений и пагинации для списка объектов.
     """
+
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = None

@@ -11,5 +11,6 @@ class LimitPageNumberPagination(PageNumberPagination):
     позволяющий клиенту задавать количество
     элементов на странице.
     """
+
     page_size = 6
-    page_size_query_param = 'limit'
+    page_size_query_param = "limit"
