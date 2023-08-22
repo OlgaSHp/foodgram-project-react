@@ -12,7 +12,9 @@ from recipes.models import (Ingredients, RecipeIngredient, Recipes,
 from users.models import User
 
 from .api_consts import (ERROR_MESSAGE, MAIL_PASSWORD_MISSING_MESSAGE,
-                         WRONG_MAIL_PASSWORD_MESSAGE)
+                         WRONG_MAIL_PASSWORD_MESSAGE, REPEAT_INGREDIENT_ERROR,
+                         COOKING_TIME_ERROR, INGREDIENT_ADD_ERROR,
+                         INGREDIENT_AMOUNT_ERROR)
 
 
 class CustomUserLoginSerializer(Serializer):
@@ -272,7 +274,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source="ingredient.name")
     measurement_unit = serializers.ReadOnlyField(
         source="ingredient.measurement_unit"
-        )
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -344,7 +346,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tags.objects.all()
-        )
+    )
     ingredients = IngredientsEditSerializer(many=True)
 
     class Meta:
@@ -371,8 +373,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             ingredient = get_object_or_404(Ingredients, id=items["id"])
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
-                    "Ингредиент не должен повторяться"
-                    )
+                    REPEAT_INGREDIENT_ERROR
+                )
             ingredient_list.append(ingredient)
         tags = data["tags"]
         if not tags:
@@ -381,7 +383,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             if not Tags.objects.filter(name=tag_name).exists():
                 raise serializers.ValidationError(
                     f"Тэга {tag_name} не существует"
-                    )
+                )
         return data
 
     def validate_cooking_time(self, cooking_time):
@@ -399,7 +401,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         """
         if int(cooking_time) < 1:
             raise serializers.ValidationError(
-                "Время приготовления должно быть не меньше 1 минуты"
+                COOKING_TIME_ERROR
             )
         return cooking_time
 
@@ -418,12 +420,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         """
         if not ingredients:
             raise serializers.ValidationError(
-                "Добавьте минимум 1 ингредиент в рецепт"
-                )
+                INGREDIENT_ADD_ERROR
+            )
         for ingredient in ingredients:
             if int(ingredient.get("amount")) < 1:
                 raise serializers.ValidationError(
-                    "Количество ингредиентов должно быть не меньше 1"
+                    INGREDIENT_AMOUNT_ERROR
                 )
         return ingredients
 
