@@ -1,44 +1,29 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import (
-    FavoriteRecipe,
-    Ingredients,
-    Recipes,
-    ShoppingCart,
-    Subscriptions,
-    Tags,
-)
+from recipes.models import (FavoriteRecipe, Ingredients, Recipes, ShoppingCart,
+                            Subscriptions, Tags)
 from rest_framework import generics, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
-from rest_framework.permissions import (
-    SAFE_METHODS,
-    AllowAny,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import (SAFE_METHODS, AllowAny,
+                                        IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from users.models import User
 
 from api.filters import IngredientFilter, RecipeFilter
 
 from .mixins import GetObjectMixin, PermissionAndPaginationMixin
-from .serializers import (
-    CustomUserLoginSerializer,
-    IngredientSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    SubscribeSerializer,
-    TagSerializer,
-    UserCreateSerializer,
-    UserListSerializer,
-    UserPasswordSerializer,
-)
+from .serializers import (CustomUserLoginSerializer, IngredientSerializer,
+                          RecipeReadSerializer, RecipeWriteSerializer,
+                          SubscribeSerializer, TagSerializer,
+                          UserCreateSerializer, UserListSerializer,
+                          UserPasswordSerializer)
 
 
 class GetToken(ObtainAuthToken):

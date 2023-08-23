@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db.models import (CASCADE, SET_NULL, CharField, DateTimeField,
                               ForeignKey, ImageField, ManyToManyField, Model,
@@ -11,8 +11,6 @@ from .recipes_consts import (HEX_COLOR_VALIDATOR, MAX_LENGTH_COLOR_TAGS,
                              MAX_LENGTH_MEASUREMENT, MAX_LENGTH_NAME_ING,
                              MAX_LENGTH_NAME_RECIPES, MAX_LENGTH_NAME_TAGS,
                              MAX_LENGTH_SLUG_TAGS, TEXT_PREVIEW_LENGTH)
-
-User = get_user_model()
 
 
 class Ingredients(Model):

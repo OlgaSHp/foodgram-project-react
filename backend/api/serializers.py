@@ -1,20 +1,19 @@
 import django.contrib.auth.password_validation as validators
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from recipes.models import (Ingredients, RecipeIngredient, Recipes,
+                            Subscriptions, Tags)
 from rest_framework import serializers
 from rest_framework.serializers import (CharField, EmailField, Serializer,
                                         ValidationError)
 
-from recipes.models import (Ingredients, RecipeIngredient, Recipes,
-                            Subscriptions, Tags)
-from users.models import User
-
-from .api_consts import (ERROR_MESSAGE, MAIL_PASSWORD_MISSING_MESSAGE,
-                         WRONG_MAIL_PASSWORD_MESSAGE, REPEAT_INGREDIENT_ERROR,
-                         COOKING_TIME_ERROR, INGREDIENT_ADD_ERROR,
-                         INGREDIENT_AMOUNT_ERROR)
+from .api_consts import (COOKING_TIME_ERROR, ERROR_MESSAGE,
+                         INGREDIENT_ADD_ERROR, INGREDIENT_AMOUNT_ERROR,
+                         MAIL_PASSWORD_MISSING_MESSAGE,
+                         REPEAT_INGREDIENT_ERROR, WRONG_MAIL_PASSWORD_MESSAGE)
 
 
 class CustomUserLoginSerializer(Serializer):
