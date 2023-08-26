@@ -1,10 +1,9 @@
-from django.urls import include, path
-from djoser.views import TokenDestroyView, UserViewSet
-from rest_framework.routers import DefaultRouter
-
 from api.views import (AddDeleteFavoriteRecipe, AddDeleteShoppingCart,
                        AddDeleteSubscription, GetToken, IngredientsViewSet,
                        RecipesViewSet, TagsViewSet, UsersViewSet)
+from django.urls import include, path
+from djoser.views import TokenDestroyView, UserViewSet
+from rest_framework.routers import DefaultRouter
 
 app_name = "api"
 
