@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = "Загрузка из csv файла"
 
     def handle(self, *args, **kwargs):
-        data_path = "C:\\Dev\\foodgram-project-react\\data"
+        data_path = "app/recipes/management/commands"
         with open(
             f"{data_path}/ingredients.csv", "r", encoding="utf-8"
         ) as file:

@@ -12,6 +12,9 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(",")
 
+CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS = (
+    f"https://{os.getenv('FOODGRAM_HOST')}",)
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -60,15 +63,22 @@ TEMPLATES = [
 WSGI_APPLICATION = "foodgram.wsgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "django"),
-        "USER": os.getenv("POSTGRES_USER", "django"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-        "HOST": os.getenv("DB_HOST", ""),
-        "PORT": os.getenv("DB_PORT", 5432),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv("POSTGRES_DB", "django"),
+#         "USER": os.getenv("POSTGRES_USER", "django"),
+#         "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
+#         "HOST": os.getenv("DB_HOST", ""),
+#         "PORT": os.getenv("DB_PORT", 5432),
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -108,9 +118,6 @@ DJOSER = {
     "HIDE_USERS": False,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": False,
     "LOGIN_FIELD": "email",
-    "SERIALIZERS": {
-        "user_create": "api.serializers.UserCreateSerializer",
-    },
     "PERMISSIONS": {
         "user_list": ["rest_framework.permissions.AllowAny"],
     },
