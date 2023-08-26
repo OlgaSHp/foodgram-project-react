@@ -1,8 +1,7 @@
 import django_filters as filters
 from django.core.exceptions import ValidationError
-
+from django_filters import rest_framework as django_filters
 from recipes.models import Ingredients, Recipes
-from users.models import User
 
 
 class TagsMultipleChoiceField(filters.fields.MultipleChoiceField):
@@ -88,7 +87,10 @@ class RecipeFilter(filters.FilterSet):
     - fields: Поля для фильтрации.
     """
 
-    author = filters.ModelChoiceFilter(queryset=User.objects.all())
+    author = django_filters.NumberFilter(
+        field_name='author__id',
+        lookup_expr='exact'
+    )
     is_in_shopping_cart = filters.BooleanFilter(
         widget=filters.widgets.BooleanWidget(), label="В корзине."
     )

@@ -510,11 +510,11 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     - model: Ссылка на модель Recipes.
     - fields: Поля, которые будут сериализованы.
     """
-
-    image = serializers.SerializerMethodField(
-        "get_image_url",
-        read_only=True,
-    )
+    image = serializers.ReadOnlyField(source='image.url')
+    # image = serializers.SerializerMethodField(
+    #     "get_image_url",
+    #     read_only=True,
+    # )
     tags = TagSerializer(many=True, read_only=True)
     author = RecipeUserSerializer(
         read_only=True, default=serializers.CurrentUserDefault()

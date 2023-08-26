@@ -19,7 +19,8 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 
 from .mixins import GetObjectMixin, PermissionAndPaginationMixin
-from .serializers import (CustomUserLoginSerializer, IngredientSerializer,
+from .serializers import (CustomUserLoginSerializer,
+                          IngredientSerializer,
                           RecipeReadSerializer, RecipeWriteSerializer,
                           SubscribeSerializer, TagSerializer,
                           UserCreateSerializer, UserListSerializer,
@@ -375,6 +376,12 @@ class RecipesViewSet(viewsets.ModelViewSet):
         - QuerySet рецептов с аннотациями в зависимости
         от статуса аутентификации пользователя.
         """
+        author_id = self.kwargs.get('author_id')
+        queryset = Recipes.objects.all()
+
+        if author_id:
+            queryset = queryset.filter(author_id=author_id)
+            return queryset
         return (
             Recipes.objects.annotate(
                 is_favorited=Exists(
