@@ -55,7 +55,6 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        stack_file_name: docker-compose.production.yml
         script: |
           cd /home/yc-user/foodgram-project-react
           sudo docker pull olgab497/foodgram_backend
@@ -69,7 +68,7 @@ jobs:
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
           echo DEBUG_VALUE=${{ secrets.DEBUG_VALUE }} >> .env
-          sudo docker compose --file docker_compose.production.yml up -d
+          sudo docker compose -f docker_compose.production.yml up -d
 
   send_message:
     runs-on: ubuntu-latest
