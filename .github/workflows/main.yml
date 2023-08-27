@@ -69,7 +69,7 @@ jobs:
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
           echo DEBUG_VALUE=${{ secrets.DEBUG_VALUE }} >> .env
-          sudo docker compose -f docker_compose.production.yml up -d
+          sudo docker compose -f /home/yc-user/foodgram-project-react/docker_compose.production.yml up -d
 
   send_message:
     runs-on: ubuntu-latest
