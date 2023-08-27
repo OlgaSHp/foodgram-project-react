@@ -116,7 +116,7 @@ sudo docker compose -f docker-compose.production.yml exec backend python manage.
 
 Проект доступен по адресу:
 ```bash
-foodgramplatform.ddns.net
+https://foodgramplatform.ddns.net/
 логин администратора - root
 пароль администратора - admin123
 ```
