@@ -55,7 +55,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        stack_file_name: docker-compose.yaml
+        stack_file_name: docker_compose.production.yaml
         script: |
           sudo docker pull olgab497/foodgram_backend
           sudo docker compose stop
