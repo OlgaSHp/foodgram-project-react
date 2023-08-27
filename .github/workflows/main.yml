@@ -57,6 +57,7 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         stack_file_name: docker_compose.production.yml
         script: |
+          cd foodgram-project-react
           sudo docker pull olgab497/foodgram_backend
           sudo docker compose -f docker_compose.production.yml stop
           touch .env
