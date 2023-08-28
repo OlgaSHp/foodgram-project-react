@@ -56,7 +56,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: 
-          cd foodgram-project-react
+          cd foodgram-project-react/
           sudo docker pull olgab497/foodgram_backend
           sudo docker compose down
           touch .env
