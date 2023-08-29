@@ -1,4 +1,3 @@
-from api.filters import IngredientFilter, RecipeFilter
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Count, Sum
@@ -16,6 +15,8 @@ from rest_framework.permissions import (SAFE_METHODS, AllowAny,
                                         IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+
+from api.filters import IngredientFilter, RecipeFilter
 
 from .mixins import GetObjectMixin, PermissionAndPaginationMixin
 from .serializers import (CustomUserLoginSerializer, IngredientSerializer,
