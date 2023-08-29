@@ -163,13 +163,10 @@ def set_password(request):
     """
     serializer = UserPasswordSerializer(data=request.data,
                                         context={"request": request})
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response({"message": "Пароль изменен"},
                         status=status.HTTP_201_CREATED)
-    return Response(
-        {"error": "Введите верные данные"}, status=status.HTTP_400_BAD_REQUEST
-    )
 
 
 class AddDeleteSubscription(
@@ -232,16 +229,6 @@ class AddDeleteSubscription(
         :return: Ответ с данными о созданной подписке.
         """
         instance = self.get_object()
-        if request.user.id == instance.id:
-            return Response(
-                {"errors": "Нельзя подписаться на себя"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if request.user.follower.filter(author=instance).exists():
-            return Response(
-                {"errors": "Вы уже подписаны на этого автора"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         subscription = request.user.follower.create(author=instance)
         serializer = self.get_serializer(subscription)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

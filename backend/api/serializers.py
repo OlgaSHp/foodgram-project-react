@@ -1,7 +1,7 @@
+import django.contrib.auth.password_validation as validators
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validators
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -14,7 +14,9 @@ from recipes.models import (Ingredients, RecipeIngredient, Recipes,
 from .api_consts import (ERROR_MESSAGE,
                          INGREDIENT_ADD_ERROR,
                          MAIL_PASSWORD_MISSING_MESSAGE,
-                         REPEAT_INGREDIENT_ERROR, WRONG_MAIL_PASSWORD_MESSAGE)
+                         REPEAT_INGREDIENT_ERROR, WRONG_MAIL_PASSWORD_MESSAGE,
+                         MAX_VALUE_INGREDIENT, MIN_VALUE_INGREDIENT,
+                         MIN_VALUE_COOKING_TIME, MAX_VALUE_COOKING_TIME)
 
 
 class CustomUserLoginSerializer(Serializer):
@@ -52,7 +54,8 @@ class CustomUserLoginSerializer(Serializer):
             raise ValidationError(MAIL_PASSWORD_MISSING_MESSAGE)
         if not User.objects.filter(email=email).exists():
             raise ValidationError(WRONG_MAIL_PASSWORD_MESSAGE)
-        username = User.objects.get(email=email).username
+        user = get_object_or_404(User, email=email)
+        username = user.username
         user = authenticate(request=request,
                             username=username,
                             password=password)
@@ -320,7 +323,9 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
     """
 
     id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(
+        max_value=MAX_VALUE_INGREDIENT, min_value=MIN_VALUE_INGREDIENT
+    )
 
     class Meta:
         model = Ingredients
@@ -348,6 +353,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         queryset=Tags.objects.all()
     )
     ingredients = IngredientsEditSerializer(many=True)
+    cooking_time = serializers.IntegerField(
+        max_value=MAX_VALUE_COOKING_TIME, min_value=MIN_VALUE_COOKING_TIME
+    )
 
     class Meta:
         model = Recipes
@@ -575,6 +583,22 @@ class SubscribeSerializer(serializers.ModelSerializer):
             "recipes",
             "recipes_count",
         )
+
+    def create(self, validated_data):
+        # Проверка на подписку на себя
+        request = self.context.get("request")
+        if request.user.id == validated_data["author"].id:
+            raise serializers.ValidationError("Нельзя подписаться на себя")
+
+        # Проверка на уже существующую подписку
+        if request.user.follower.filter(
+            author=validated_data["author"]
+        ).exists():
+            raise serializers.ValidationError(
+                "Вы уже подписаны на этого автора"
+            )
+
+        return super().create(validated_data)
 
     def get_recipes(self, obj):
         """
