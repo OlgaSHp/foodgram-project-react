@@ -11,8 +11,8 @@ from rest_framework.serializers import (CharField, EmailField, Serializer,
 from recipes.models import (Ingredients, RecipeIngredient, Recipes,
                             Subscriptions, Tags)
 
-from .api_consts import (COOKING_TIME_ERROR, ERROR_MESSAGE,
-                         INGREDIENT_ADD_ERROR, INGREDIENT_AMOUNT_ERROR,
+from .api_consts import (ERROR_MESSAGE,
+                         INGREDIENT_ADD_ERROR,
                          MAIL_PASSWORD_MISSING_MESSAGE,
                          REPEAT_INGREDIENT_ERROR, WRONG_MAIL_PASSWORD_MESSAGE)
 
@@ -386,25 +386,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 )
         return data
 
-    def validate_cooking_time(self, cooking_time):
-        """
-        Проверяет корректность времени приготовления.
-
-        Параметры:
-        - cooking_time: Время приготовления рецепта.
-
-        Возвращает:
-        - cooking_time: Проверенное время приготовления.
-
-        Вызывает исключение serializers.ValidationError,
-        если время приготовления некорректное.
-        """
-        if int(cooking_time) < 1:
-            raise serializers.ValidationError(
-                COOKING_TIME_ERROR
-            )
-        return cooking_time
-
     def validate_ingredients(self, ingredients):
         """
         Проверяет корректность списка ингредиентов.
@@ -422,11 +403,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 INGREDIENT_ADD_ERROR
             )
-        for ingredient in ingredients:
-            if int(ingredient.get("amount")) < 1:
-                raise serializers.ValidationError(
-                    INGREDIENT_AMOUNT_ERROR
-                )
         return ingredients
 
     def create_ingredients(self, ingredients, recipe):
@@ -437,12 +413,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         - ingredients: Список ингредиентов рецепта.
         - recipe: Объект рецепта.
         """
+        recipe_ingredient_list = []
+
         for ingredient in ingredients:
-            RecipeIngredient.objects.create(
+            recipe_ingredient = RecipeIngredient(
                 recipe=recipe,
                 ingredient_id=ingredient.get("id"),
                 amount=ingredient.get("amount"),
             )
+        recipe_ingredient_list.append(recipe_ingredient)
+
+        RecipeIngredient.objects.bulk_create(recipe_ingredient_list)
 
     def create(self, validated_data):
         """
@@ -512,10 +493,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     - fields: Поля, которые будут сериализованы.
     """
     image = serializers.ReadOnlyField(source='image.url')
-    # image = serializers.SerializerMethodField(
-    #     "get_image_url",
-    #     read_only=True,
-    # )
     tags = TagSerializer(many=True, read_only=True)
     author = RecipeUserSerializer(
         read_only=True, default=serializers.CurrentUserDefault()
