@@ -1,14 +1,15 @@
-import django.contrib.auth.password_validation as validators
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validators
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Ingredients, RecipeIngredient, Recipes,
-                            Subscriptions, Tags)
 from rest_framework import serializers
 from rest_framework.serializers import (CharField, EmailField, Serializer,
                                         ValidationError)
+
+from recipes.models import (Ingredients, RecipeIngredient, Recipes,
+                            Subscriptions, Tags)
 
 from .api_consts import (COOKING_TIME_ERROR, ERROR_MESSAGE,
                          INGREDIENT_ADD_ERROR, INGREDIENT_AMOUNT_ERROR,
